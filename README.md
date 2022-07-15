@@ -1,39 +1,14 @@
-# Welcome to Remix!
+# Remix + Cloudflare Workers (module format)
 
-- [Remix Docs](https://remix.run/docs)
+This is a reproduction of a issue with using Remix and Cloudflare Workers in the module format (rather than the addEventListener format).
 
-## Development
+I've had to fight the framework to use modules by:
 
-You will be running two processes during development:
+1.  not using `createEventHandler`, and reimplementing it using it's constituent parts: `createRequestHandler` and `handleAsset`
+1.  passing in `ASSET_NAMESPACE` and `ASSET_MANIFEST` manually since env vars are no longer globals in the module format of Cloudflare Workers
 
-- The Miniflare server (miniflare is a local environment for Cloudflare Workers)
-- The Remix development server
+## Reproduce
 
-Both are started with one command:
+Run `npm run dev` and you'll notice http://localhost:8787 loads locally
 
-```sh
-npm run dev
-```
-
-Open up [http://127.0.0.1:8787](http://127.0.0.1:8787) and you should be ready to go!
-
-If you want to check the production build, you can stop the dev server and run following commands:
-
-```sh
-npm run build
-npm start
-```
-
-Then refresh the same URL in your browser (no live reload for production builds).
-
-## Deployment
-
-Use [wrangler](https://developers.cloudflare.com/workers/cli-wrangler) to build and deploy your application to Cloudflare Workers. If you don't have it yet, follow [the installation guide](https://developers.cloudflare.com/workers/cli-wrangler/install-update) to get it setup. Be sure to [authenticate the CLI](https://developers.cloudflare.com/workers/cli-wrangler/authentication) as well.
-
-If you don't already have an account, then [create a cloudflare account here](https://dash.cloudflare.com/sign-up) and after verifying your email address with Cloudflare, go to your dashboard and set up your free custom Cloudflare Workers subdomain.
-
-Once that's done, you should be able to deploy your app:
-
-```sh
-npm run deploy
-```
+Run `npm run deploy` and you'll notice the deployed worker on workers.dev will return the Cloudflare Worker exception "Error 1101" page
